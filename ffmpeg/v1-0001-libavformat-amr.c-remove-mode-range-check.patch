@@ -1,0 +1,39 @@
+From 078d9827ae0afa16ad1ac65b414a4b92a5fb198e Mon Sep 17 00:00:00 2001
+From: sunzhenliang <hisunzhenliang@outlook.com>
+Date: Sat, 4 Sep 2021 14:12:52 +0800
+Subject: [PATCH v1 1/1] libavformat/amr.c: remove mode range check
+
+Those comfort noise frames and empty frames should be
+considered the correct frame. And amr.c/amr_read_packet()
+also takes them as correct frames too.
+
+Signed-off-by: sunzhenliang <hisunzhenliang@outlook.com>
+---
+ libavformat/amr.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/libavformat/amr.c b/libavformat/amr.c
+index 836b276fd5..540d8033d8 100644
+--- a/libavformat/amr.c
++++ b/libavformat/amr.c
+@@ -178,7 +178,7 @@ static int amrnb_probe(const AVProbeData *p)
+ 
+     while (i < p->buf_size) {
+         mode = b[i] >> 3 & 0x0F;
+-        if (mode < 9 && (b[i] & 0x4) == 0x4) {
++        if ((b[i] & 0x4) == 0x4) {
+             int last = b[i];
+             int size = amrnb_packed_size[mode];
+             while (size--) {
+@@ -234,7 +234,7 @@ static int amrwb_probe(const AVProbeData *p)
+ 
+     while (i < p->buf_size) {
+         mode = b[i] >> 3 & 0x0F;
+-        if (mode < 10 && (b[i] & 0x4) == 0x4) {
++        if ((b[i] & 0x4) == 0x4) {
+             int last = b[i];
+             int size = amrwb_packed_size[mode];
+             while (size--) {
+-- 
+2.30.1 (Apple Git-130)
+
