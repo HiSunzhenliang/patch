@@ -1,0 +1,67 @@
+```
+# with patch
+    ~/Downloads ❯ ffmpeg -i a.amr -loglevel 48                                                                                                      sun@sun-desktop   21:40:35
+ffmpeg version N-103543-gd160a22de9 Copyright (c) 2000-2021 the FFmpeg developers
+  built with gcc 9 (Ubuntu 9.3.0-17ubuntu1~20.04)
+  configuration: --prefix=/home/sun/.local --enable-shared --enable-sdl --enable-gpl --enable-version3 --enable-libmp3lame --enable-debug --enable-libopencore-amrnb --enable-libopencore-amrwb --enable-libvo-amrwbenc --enable-libx265 --enable-libx264 --disable-x86asm --enable-libmodplug
+  libavutil      57.  4.101 / 57.  4.101
+  libavcodec     59.  7.101 / 59.  7.101
+  libavformat    59.  5.100 / 59.  5.100
+  libavdevice    59.  0.101 / 59.  0.101
+  libavfilter     8.  7.101 /  8.  7.101
+  libswscale      6.  1.100 /  6.  1.100
+  libswresample   4.  0.100 /  4.  0.100
+  libpostproc    56.  0.100 / 56.  0.100
+Splitting the commandline.
+Reading option '-i' ... matched as input url with argument 'a.amr'.
+Reading option '-loglevel' ... matched as option 'loglevel' (set logging level) with argument '48'.
+Finished splitting the commandline.
+Parsing a group of options: global .
+Applying option loglevel (set logging level) with argument 48.
+Successfully parsed a group of options.
+Parsing a group of options: input url a.amr.
+Successfully parsed a group of options.
+Opening an input file: a.amr.
+[NULL @ 0x55ebcdf77e40] Opening 'a.amr' for reading
+[file @ 0x55ebcdf78780] Setting default whitelist 'file,crypto,data'
+[amrnb @ 0x55ebcdf77e40] Format amrnb probed with size=4096 and score=26
+[amrnb @ 0x55ebcdf77e40] Before avformat_find_stream_info() pos: 0 bytes read:32768 seeks:0 nb_streams:1
+[amrnb @ 0x55ebcdf78fc0] Corrupt bitstream
+[amrnb @ 0x55ebcdf77e40] All info found
+[amrnb @ 0x55ebcdf77e40] Estimating duration from bitrate, this may be inaccurate
+[amrnb @ 0x55ebcdf77e40] After avformat_find_stream_info() pos: 50 bytes read:32768 seeks:0 frames:50
+Input #0, amrnb, from 'a.amr':
+  Duration: 00:13:17.84, bitrate: 0 kb/s
+  Stream #0:0, 50, 1/8000: Audio: amr_nb, 8000 Hz, mono, flt
+Successfully opened the file.
+At least one output file must be specified
+[AVIOContext @ 0x55ebcdf80b80] Statistics: 32768 bytes read, 0 seeks
+
+# without patch
+    ~/Downloads ❯ ffmpeg -i a.amr -loglevel 48                                                                                                      sun@sun-desktop   21:40:42
+ffmpeg version N-103542-gb9426f371a Copyright (c) 2000-2021 the FFmpeg developers
+  built with gcc 9 (Ubuntu 9.3.0-17ubuntu1~20.04)
+  configuration: --prefix=/home/sun/.local --enable-shared --enable-sdl --enable-gpl --enable-version3 --enable-libmp3lame --enable-debug --enable-libopencore-amrnb --enable-libopencore-amrwb --enable-libvo-amrwbenc --enable-libx265 --enable-libx264 --disable-x86asm --enable-libmodplug
+  libavutil      57.  4.101 / 57.  4.101
+  libavcodec     59.  7.101 / 59.  7.101
+  libavformat    59.  5.100 / 59.  5.100
+  libavdevice    59.  0.101 / 59.  0.101
+  libavfilter     8.  7.101 /  8.  7.101
+  libswscale      6.  1.100 /  6.  1.100
+  libswresample   4.  0.100 /  4.  0.100
+  libpostproc    56.  0.100 / 56.  0.100
+Splitting the commandline.
+Reading option '-i' ... matched as input url with argument 'a.amr'.
+Reading option '-loglevel' ... matched as option 'loglevel' (set logging level) with argument '48'.
+Finished splitting the commandline.
+Parsing a group of options: global .
+Applying option loglevel (set logging level) with argument 48.
+Successfully parsed a group of options.
+Parsing a group of options: input url a.amr.
+Successfully parsed a group of options.
+Opening an input file: a.amr.
+[NULL @ 0x55fff983ce40] Opening 'a.amr' for reading
+[file @ 0x55fff983d780] Setting default whitelist 'file,crypto,data'
+[AVIOContext @ 0x55fff9845b80] Statistics: 39892 bytes read, 0 seeks
+a.amr: Invalid data found when processing input
+```
