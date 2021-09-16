@@ -1,0 +1,60 @@
+From c71f10067e713b4ca7aabbfe08bd8590295f839b Mon Sep 17 00:00:00 2001
+From: sunzhenliang <hisunzhenliang@outlook.com>
+Date: Thu, 16 Sep 2021 11:01:48 +0800
+Subject: [PATCH v1 1/1] avformat/amr: Return PATCHWELCOME on stereo files
+
+Signed-off-by: sunzhenliang <hisunzhenliang@outlook.com>
+---
+ libavformat/amr.c | 22 ++++++++++++++++++----
+ 1 file changed, 18 insertions(+), 4 deletions(-)
+
+diff --git a/libavformat/amr.c b/libavformat/amr.c
+index 836b276fd5..2762010ebe 100644
+--- a/libavformat/amr.c
++++ b/libavformat/amr.c
+@@ -36,8 +36,10 @@ typedef struct {
+     uint64_t block_count;
+ } AMRContext;
+ 
+-static const char AMR_header[]   = "#!AMR\n";
+-static const char AMRWB_header[] = "#!AMR-WB\n";
++static const char AMR_header[]      = "#!AMR\n";
++static const char AMR_MC_header[]   = "#!AMR_MC1.0\n";
++static const char AMRWB_header[]    = "#!AMR-WB\n";
++static const char AMRWB_MC_header[] = "#!AMR-WB_MC1.0\n";
+ 
+ static const uint8_t amrnb_packed_size[16] = {
+     13, 14, 16, 18, 20, 21, 27, 32, 6, 1, 1, 1, 1, 1, 1, 1
+@@ -82,7 +84,7 @@ static int amr_read_header(AVFormatContext *s)
+ {
+     AVIOContext *pb = s->pb;
+     AVStream *st;
+-    uint8_t header[9];
++    uint8_t header[15];
+ 
+     if (avio_read(pb, header, 6) != 6)
+         return AVERROR_INVALIDDATA;
+@@ -94,7 +96,19 @@ static int amr_read_header(AVFormatContext *s)
+         if (avio_read(pb, header + 6, 3) != 3)
+             return AVERROR_INVALIDDATA;
+         if (memcmp(header, AMRWB_header, 9)) {
+-            return -1;
++            if (avio_read(pb, header + 6 + 3, 3) != 3)
++                return AVERROR_INVALIDDATA;
++            if (memcmp(header, AMR_MC_header, 12)) {
++                if (avio_read(pb, header + 6 + 3 + 3, 3) != 3)
++                    return AVERROR_INVALIDDATA;
++                if (memcmp(header, AMRWB_MC_header, 15)) {
++                    return -1;
++                }
++                avpriv_report_missing_feature(s, "multi-channel AMRWB");
++                return AVERROR_PATCHWELCOME;
++            }
++            avpriv_report_missing_feature(s, "multi-channel AMR");
++            return AVERROR_PATCHWELCOME;
+         }
+ 
+         st->codecpar->codec_tag   = MKTAG('s', 'a', 'w', 'b');
+-- 
+2.25.1
+
